@@ -1,0 +1,15 @@
+#Database
+
+DB_HOST = 
+
+DB_USER = 
+
+DB_PASSWORD = 
+
+DB_NAME = 
+
+#API Search
+
+CATEGORY_SEARCH = 
+
+SEARCH_LIST = []
