@@ -20,16 +20,15 @@ class Category:
         for product in response_get["products"]:
             try:
                 line_list = []
-                not_complete = False
+                complete = True
                 for search in config.SEARCH_LIST:
                     line_list.append(product[search])
                     if product[search] == "":
-                        not_complete = True
-                if not_complete:
-                    pass
-                else:  
+                        complete = False
+                if complete:
                     line_tuple = tuple(line_list)
                     nutriments_page.append(line_tuple)
+                   
             except KeyError:
                 pass
         return nutriments_page
