@@ -18,8 +18,11 @@ class Database(Category):
         )
         return self.db_conn
 
+    # def execute_cursor():
+
+
     def create_table(self):
-        script = open("create_table.txt", "r")
+        script = open("create_table.sql", "r")
         action = ""
         for characters in script:
             action += str(characters)
@@ -27,19 +30,18 @@ class Database(Category):
         cursor.execute(action, multi=True)
     
     def category_writer(self):
-        exist = False
+        products = self.list_builder()
         cursor = self.connection().cursor()
         cursor.execute("SELECT name FROM category", multi=False)
         result = cursor.fetchall()
-        for category in result:
-            if category == config.CATEGORY_SEARCH:
-                exist = True
-        if not exist:
-            cursor.execute(f"INSERT INTO category (name) VALUES ('{config.CATEGORY_SEARCH}')")
-            self.db_conn.commit()
-        
+        for db_category in result:
+            for product in products:
+                for category in product["categories"]:
+                    print (category)
+                    if db_category != category:
+                        cursor.execute(f"INSERT INTO category (name) VALUES ('{category}')")
+                        self.db_conn.commit()
 
 
 category = Database(config.CATEGORY_SEARCH)
-category.create_table()
-category.nutriment_writer()
+category.category_writer()

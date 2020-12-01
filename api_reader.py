@@ -1,8 +1,9 @@
 import requests
 
 import config
+from product_maker import Product
 
-class Category:
+class Category(Product):
 
 
     def __init__(self, category):
@@ -15,29 +16,25 @@ class Category:
     
 
     def lines_builder(self, page):
-        response_get = self.request(page)
+        response_get = dict(self.request(page))
         nutriments_page = []
-        for product in response_get["products"]:
+        for compteur in range(len(response_get["products"])):
             try:
-                line_list = []
-                complete = True
-                for search in config.SEARCH_LIST:
-                    line_list.append(product[search])
-                    if product[search] == "":
-                        complete = False
-                if complete:
-                    line_tuple = tuple(line_list)
-                    nutriments_page.append(line_tuple)
-                   
+                temporaire = Product(response_get, compteur)
+                nutriments_page.append(temporaire)
+                print (temporaire.name(), temporaire.categories(), temporaire.nutrition_grade(), temporaire.store(), temporaire.url())
             except KeyError:
-                pass
+                ("Une clé ne correspond pas")
         return nutriments_page
 
 
     def list_builder(self):
-        nutriments = []
-        for list in range(1, 4):
+        products = []
+        for list in range(1, 4): 
             page = self.lines_builder(list)
-            nutriments.extend (page)
-        print(nutriments, len(nutriments))
-        return (nutriments)
+            products.extend (page)    
+        return (products)
+
+thing = Category("pizzas")
+
+thing.list_builder()
