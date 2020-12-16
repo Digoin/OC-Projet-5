@@ -1,6 +1,3 @@
-import requests
-
-import config
 
 
 class Product:
@@ -11,7 +8,8 @@ class Product:
 
 
     def search(self, search):
-        return self.json_dic["products"][self.product_index][search]
+        search_line = self.json_dic["products"][self.product_index][search]
+        return f"{search_line},"
 
     def name(self):
         return self.search("product_name")
@@ -23,7 +21,14 @@ class Product:
         return self.search("nutrition_grades")
 
     def store(self):
-        return self.search("stores")
+        try:
+            return self.search("stores")
+        except KeyError:
+            print("Store not found")
+            return None
 
     def url(self):
         return self.search("url")
+
+    def categories_language(self):
+        return self.search("categories_lc")

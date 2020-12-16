@@ -1,6 +1,5 @@
 import requests
 
-import config
 from product_maker import Product
 
 class Category(Product):
@@ -18,13 +17,13 @@ class Category(Product):
     def lines_builder(self, page):
         response_get = dict(self.request(page))
         nutriments_page = []
-        for compteur in range(len(response_get["products"])):
+        for element in range(len(response_get["products"])):
             try:
-                temporaire = Product(response_get, compteur)
-                nutriments_page.append(temporaire)
-                print (temporaire.name(), temporaire.categories(), temporaire.nutrition_grade(), temporaire.store(), temporaire.url())
+                object = Product(response_get, element)
+                if object.categories_language() == "fr," and object.store() != None and object.store() != ",":
+                    nutriments_page.append(object)
             except KeyError:
-                ("Une clé ne correspond pas")
+                print("Une clé ne correspond pas")
         return nutriments_page
 
 
@@ -34,6 +33,8 @@ class Category(Product):
             page = self.lines_builder(list)
             products.extend (page)    
         return (products)
+    
+
 
 thing = Category("pizzas")
 
