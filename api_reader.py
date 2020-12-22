@@ -17,11 +17,13 @@ class Category(Product):
     def lines_builder(self, page):
         response_get = dict(self.request(page))
         nutriments_page = []
+        test = 1
         for element in range(len(response_get["products"])):
             try:
                 object = Product(response_get, element)
-                if object.categories_language() == "fr," and object.store() != None and object.store() != ",":
+                if object.categories_language() == "fr" and object.store() != None:
                     nutriments_page.append(object)
+                    test += 1
             except KeyError:
                 print("Une clé ne correspond pas")
         return nutriments_page

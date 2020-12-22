@@ -33,9 +33,8 @@ class Database(Category):
         if cleaned.find(' ') == 0:
             cleaned = cleaned[1:]
         return cleaned
-    
 
-    def word_builder(self, line, list):
+    def word_builder(self, line):
         word = ""
         reserve = []
         for character in line:
@@ -44,64 +43,44 @@ class Database(Category):
                 reserve.append(cleaned)
                 word = ""
             word += character
-        list.append(reserve)
-        return list
+        return word
+        
+
+    def category_writer(self):
+        db_conn = self.connection()
+        cursor = db_conn.cursor()
+        products = self.list_builder()
+
+        for object in products:
+            category_list = set()
+            category = self.word_builder(object.categories())
+            print(object.categories())
+            category_list.update(category)
+            category_list = list(category_list)
+        
+        for category in category_list:
+            cursor.execute(f"INSERT INTO category (idcategory, name) VALUES {category_list.index(category), category};")
+
+        # db_conn.commit()
+        db_conn.close()
+        return category_list
 
 
     def db_writer(self):
+        all_category = self.category_writer()
         db_conn = self.connection()
-        products = self.list_builder()
         cursor = db_conn.cursor()
-        name_list = []
-        url_list = []
-        nutriscore_list = []
-        store_list = []
-        category_list = []
-        index = 0
-        category_index = 1
-        category_dict = {}
-        already_exist = []
-        fk_index = 0
+        product_id = 1
 
-        for object in products:
-            print(object.name())
-            name_list = self.word_builder(object.name(), name_list)
-            url_list = self.word_builder(object.url(), url_list)
-            nutriscore_list = self.word_builder(object.nutrition_grade(), nutriscore_list)
-            store_list = self.word_builder(object.store(), store_list)
-            category_list = self.word_builder(object.categories(), category_list)
-            
-        for category_per_product in category_list:
-            for category in category_per_product:
-                if category not in already_exist:
-                    already_exist.append(category)
-                    category_dict[category_index] = category
-                    category_index += 1
-        
 
-        for category in category_dict:
-            cursor.execute(f"INSERT INTO category (idcategory, name) VALUES {category, category_dict[category]};")
+        for product in self.list_builder:
+            store_list = self.word_builder(product.store())
 
-            
+            cursor.execute(f"INSERT INTO product (name, url, nutriscore, store, idproduct) VALUES {product.name(), product.url(), product.nutrition_grade(), product.store(), product_id};")
+            for category in product.categories():
+                cursor.execute(f"INSERT INTO `category_product` (`category`, `product`) VALUES {product_id, all_category.index(category)};")
 
-        for product in name_list:
-            for thing in category_list:
-                for category in thing:              
-                    temporaire = list(category_dict.keys())[list(category_dict.values()).index(category)]
+            product_id += 1
 
-        for product_categories in category_list:
-            fk_list = []
-            for value in category_dict.values():
-                if value in product_categories:
-                    fk_list.append(list(category_dict.keys())[list(category_dict.values()).index(value)])
-            fk_index += 1
-
-            cursor.execute(f"INSERT INTO product (name, url, nutriscore, store, idproduct) VALUES {name_list[index][0], url_list[index][0], nutriscore_list[index][0], store_list[index][0], fk_index};")
-            for id in fk_list:
-                cursor.execute(f"INSERT INTO `category_product` (`category`, `product`) VALUES {id, fk_index};")
-
-            index += 1
         db_conn.commit()
         db_conn.close()
-
-

@@ -1,5 +1,3 @@
-
-
 class Product:
 
     def __init__(self, json_dic, product_index):
@@ -7,28 +5,58 @@ class Product:
         self.product_index = product_index
 
 
-    def search(self, search):
-        search_line = self.json_dic["products"][self.product_index][search]
-        return f"{search_line},"
+    def search(self, search): 
+        return self.json_dic["products"][self.product_index][search]
 
     def name(self):
-        return self.search("product_name")
+        try:
+            if self.search("product_name") != "":
+                return self.search("product_name")
+            else:
+                return None
+        except KeyError:
+            print("Name not found")
+            return None
 
     def categories(self):
-        return self.search("categories")
+        try:
+            if self.search("categories") != "":
+                return self.search("categories")
+            else:
+                return None
+        except KeyError:
+            print("Category not found")
+            return None
 
     def nutrition_grade(self):
-        return self.search("nutrition_grades")
+        try:
+            if self.search("nutrition_grades") != "":
+                return self.search("nutrition_grades")
+            else:
+                return None
+        except KeyError:
+            print("Nutriscore not found")
+            return None
 
     def store(self):
         try:
-            return self.search("stores")
+            if self.search("stores") != "":
+                return self.search("stores")
+            else:
+                return None
         except KeyError:
             print("Store not found")
             return None
 
     def url(self):
-        return self.search("url")
+        try:
+            if self.search("url") != "":
+                return self.search("url")
+            else:
+                return None
+        except KeyError:
+            print("Url not found")
+            return None
 
     def categories_language(self):
         return self.search("categories_lc")
