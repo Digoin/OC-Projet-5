@@ -21,7 +21,7 @@ class Product:
     def categories(self):
         try:
             if self.search("categories") != "":
-                return self.search("categories")
+                return [category.strip() for category in self.search("categories").split(",")]
             else:
                 return None
         except KeyError:

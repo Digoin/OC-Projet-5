@@ -21,7 +21,7 @@ class Category(Product):
         for element in range(len(response_get["products"])):
             try:
                 object = Product(response_get, element)
-                if object.categories_language() == "fr" and object.store() != None:
+                if object.categories_language() == "fr" and object.store() != None and object.url() != None and object.store() != None and object.name() != None and object.nutrition_grade() != None:
                     nutriments_page.append(object)
                     test += 1
             except KeyError:
@@ -36,8 +36,3 @@ class Category(Product):
             products.extend (page)    
         return (products)
     
-
-
-thing = Category("pizzas")
-
-thing.list_builder()
