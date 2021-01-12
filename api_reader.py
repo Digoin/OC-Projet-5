@@ -1,8 +1,8 @@
 import requests
 
-import config
+from product_maker import Product
 
-class Category:
+class Category(Product):
 
 
     def __init__(self, category):
@@ -15,30 +15,24 @@ class Category:
     
 
     def lines_builder(self, page):
-        response_get = self.request(page)
+        response_get = dict(self.request(page))
         nutriments_page = []
-        for product in response_get["products"]:
+        test = 1
+        for element in range(len(response_get["products"])):
             try:
-                line_list = []
-                not_complete = False
-                for search in config.SEARCH_LIST:
-                    line_list.append(product[search])
-                    if product[search] == "":
-                        not_complete = True
-                if not_complete:
-                    pass
-                else:  
-                    line_tuple = tuple(line_list)
-                    nutriments_page.append(line_tuple)
+                object = Product(response_get, element)
+                if object.categories_language() == "fr" and object.store() != None and object.url() != None and object.store() != None and object.name() != None and object.nutrition_grade() != None:
+                    nutriments_page.append(object)
+                    test += 1
             except KeyError:
-                pass
+                print("Une clé ne correspond pas")
         return nutriments_page
 
 
     def list_builder(self):
-        nutriments = []
-        for list in range(1, 4):
+        products = []
+        for list in range(1, 4): 
             page = self.lines_builder(list)
-            nutriments.extend (page)
-        print(nutriments, len(nutriments))
-        return (nutriments)
+            products.extend (page)    
+        return (products)
+    
