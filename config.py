@@ -10,4 +10,4 @@ DB_NAME = "open_food_fact"
 
 #API Search
 
-CATEGORY_SEARCH = "fruits"
+CATEGORY_SEARCH = ["cakes", "pizzas", "bread"]

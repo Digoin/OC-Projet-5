@@ -34,3 +34,9 @@ CREATE TABLE `open_food_fact`.`category_product` (
     REFERENCES `open_food_fact`.`product` (`idproduct`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `open_food_fact`.`favorite` (
+  `idfavorite` INT NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`idfavorite`),
+  UNIQUE INDEX `idfavorite_UNIQUE` (`idfavorite` ASC) VISIBLE);

@@ -1,4 +1,4 @@
 from db_writer import Database
 
-test=Database("pizzas")
+test=Database("breads")
 test.db_writer()

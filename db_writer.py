@@ -28,8 +28,8 @@ class Database(Category):
   
 
     def category_writer(self):
-        db_conn = self.connection()
-        cursor = db_conn.cursor()
+    #     db_conn = self.connection()
+    #     cursor = db_conn.cursor()
         products = self.list_builder()
         category_list = set()
 
