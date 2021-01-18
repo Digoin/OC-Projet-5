@@ -18,6 +18,17 @@ class Database(Category):
         return self.db_conn
 
 
+    def delete_table(self):
+        db_conn = self.connection()
+        cursor = db_conn.cursor()
+        cursor.execute("DELETE FROM category_product;")
+        cursor.execute("DELETE FROM category;")
+        cursor.execute("DELETE FROM product;")
+        cursor.execute("DELETE FROM favorite;")
+        db_conn.commit()
+        db_conn.close()
+
+
     def create_table(self):
         script = open("create_table.sql", "r")
         action = ""
@@ -28,8 +39,6 @@ class Database(Category):
   
 
     def category_writer(self):
-    #     db_conn = self.connection()
-    #     cursor = db_conn.cursor()
         products = self.list_builder()
         category_list = set()
 
@@ -94,5 +103,32 @@ class Database(Category):
 
             product_id += 1
 
+        db_conn.commit()
+        db_conn.close()
+    
+
+    def delete_short_category(self):
+        db_conn = self.connection()
+        cursor = db_conn.cursor()
+        countdown = 0
+        last_link = 0
+
+        cursor.execute("SELECT category FROM category_product ORDER BY category")
+        category_link = cursor.fetchall()
+        for link in category_link:
+            diff = link[0] - last_link
+            if diff > 1:
+                for id in range(1, diff-1):
+                    print(id)
+                    cursor.execute(f"DELETE FROM category WHERE idcategory = {last_link + id}")
+            elif diff == 1:
+                print(countdown)
+                if countdown < 4:
+                    cursor.execute(f"DELETE FROM category_product WHERE category = {link[0]-1}")
+                    cursor.execute(f"DELETE FROM category WHERE idcategory = {link[0]-1}")
+                countdown = 0
+            elif diff == 0:
+                countdown += 1
+            last_link = link[0]
         db_conn.commit()
         db_conn.close()
