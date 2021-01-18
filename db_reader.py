@@ -19,7 +19,7 @@ class User:
 
 
     def connected(self):
-        print("Bienvenue, choississez une option à l'aide des touches 1 et 2. 0 sert à revenir en arrière.")
+        print("Bienvenue, choisissez une option à l'aide des touches 1 et 2. 0 sert à revenir en arrière.")
         fav_db=input("Voulez vous 1 : Accéder à vos produits favoris ou 2 : Accéder à la base de données de tous les produits ? : ")
         if fav_db == "1":
             self.favorite()
@@ -48,13 +48,19 @@ class User:
         cursor = db_conn.cursor()
         fav_choice = input("Voulez vous ajoutez le produit à vos favoris ? 1: Oui 2: Non :")
         if fav_choice == "1":
-            cursor.execute(f"INSERT INTO favorite (idfavorite, name) VALUES {product[0], product[1]};")
+            try:
+                cursor.execute(f"INSERT INTO favorite (idfavorite, name) VALUES {product[0], product[1]};")
+            except mysql.connector.Error as err:
+                if err.errno == 1062:
+                    print("Le produit est déjà dans la base de donnée.")
+                else:
+                    raise
             db_conn.commit()
             db_conn.close()
-            self.connected
-        elif fav_choice == "0":
+            self.db_category()
+        elif fav_choice == "0" or "2":
             db_conn.close()
-            self.db_category
+            self.db_category()
         else:
             print("Je n'ai pas compris votre demande.")
             db_conn.close()
@@ -66,12 +72,15 @@ class User:
         cursor = db_conn.cursor()
         cursor.execute("SELECT * FROM favorite")
         favorites = cursor.fetchall()
-        db_conn.close()
         id = self.chose(favorites)
         if id == None:
             self.connected()
-        print(id)
-        
+        cursor.execute(f"SELECT * FROM product WHERE idproduct = '{id[0]}'")
+        chosed_product = cursor.fetchall()
+        print("Voici le détail du produit choisis.")
+        print(chosed_product)
+        db_conn.close()
+        self.favorite()
 
 
     def db_category(self):
@@ -80,6 +89,8 @@ class User:
         cursor.execute("SELECT * FROM category")
         result = cursor.fetchall()
         choosed_category = self.chose(result)
+        if choosed_category == None:
+            self.connected()
         cursor.execute(f"SELECT product FROM category_product WHERE category='{choosed_category[0]}'")
         result = cursor.fetchall()
         db_conn.close()
@@ -111,9 +122,9 @@ class User:
                     better_products.append(product)
             if better_products == []:
                 print("Il n'y a pas de nutriscore de a dans cette catégorie.")
+                self.connected()
             else:
                 print("Voici une sélection de produit dont le nutriscore est a.")
                 chosed_id = self.chose(better_products) 
                 print(chosed_id)
-                self.add_fav(better_products[int(chosed_id)])
-
+                self.add_fav(chosed_id)
