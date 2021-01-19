@@ -1,4 +1,3 @@
-from os import close
 import mysql.connector
 import config
 

@@ -56,7 +56,8 @@ class Database(Category):
         all_category = self.category_writer()
         db_conn = self.connection()
         cursor = db_conn.cursor()
-        db_categories = []
+        new_category_id = 0
+        unplaced = True
 
         cursor.execute("SELECT idproduct FROM product ORDER BY idproduct")
         result = cursor.fetchall()
@@ -69,18 +70,27 @@ class Database(Category):
 
         cursor.execute("SELECT * from category ORDER BY idcategory")
         result = cursor.fetchall()
-        for object in result:
-            db_categories.append(object[1])
 
         for category in all_category:
-            if category not in db_categories:
-                db_categories.append(category)
-        print(db_categories)
+            if category not in result:
+                for old_category in result:
+                    if new_category_id != old_category[0]:
+                        result.append((new_category_id, category))
+                        unplaced = False
+                        break
+                    else:
+                        new_category_id += 1
+                if unplaced:
+                    result.append((new_category_id, category))
+                new_category_id = 0
+            print(result)
+
+        print(result)
 
         
-        for category in db_categories:
+        for category in result:
             try:
-                cursor.execute(f"INSERT INTO category (idcategory, name) VALUES {db_categories.index(category), category};")
+                cursor.execute(f"INSERT INTO category (idcategory, name) VALUES {category[0], category[1]};")
             except mysql.connector.Error as err:
                 if err.errno == 1062 or 1406:
                     print("La catégorie existe déjà ou est trop longue.")
@@ -91,9 +101,12 @@ class Database(Category):
         for product in self.list_builder():
             try:
                 cursor.execute(f"INSERT INTO product (name, url, nutriscore, store, idproduct) VALUES {product.name(), product.url(), product.nutrition_grade(), product.store(), product_id};")
-                for category in product.categories():
-                    print(product_id, db_categories.index(category))
-                    cursor.execute(f"INSERT INTO `category_product` (`category`, `product`) VALUES {db_categories.index(category), product_id};")
+                for searched_category in product.categories():
+                    for category in result:
+                        if category[1] == searched_category:
+                            new_id = category[0]
+                    print(product_id, new_id)
+                    cursor.execute(f"INSERT INTO `category_product` (`category`, `product`) VALUES {new_id, product_id};")
             except mysql.connector.Error as err:
                 if err.errno == 1062 or 1406:
                     print("L'une des caractéristiques du produit existe déjà ou est trop longue.")
@@ -119,7 +132,6 @@ class Database(Category):
             diff = link[0] - last_link
             if diff > 1:
                 for id in range(1, diff-1):
-                    print(id)
                     cursor.execute(f"DELETE FROM category WHERE idcategory = {last_link + id}")
             elif diff == 1:
                 print(countdown)
