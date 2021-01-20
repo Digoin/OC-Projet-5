@@ -2,12 +2,13 @@
 
 DB_HOST = "localhost"
 
-DB_USER = "root"
+DB_USER = ""
 
-DB_PASSWORD = "PVUGQDk6bXJLxgHA8ZO1"
+DB_PASSWORD = ""
 
-DB_NAME = "open_food_fact"
+DB_NAME = ""
 
-#API Search
 
-CATEGORY_SEARCH = ["cakes", "pizzas", "bread", "fruits", "yogurts"]
+#Search
+
+CATEGORY_SEARCH = [] #Example : CATEGORY_SEARCH = ["cakes", "pizzas", "bread", "fruits", "yogurts"]

@@ -1,24 +1,25 @@
 import mysql.connector
 import config
 
-def connection():
-    db_conn = mysql.connector.connect(
-        host=config.DB_HOST,
-        user=config.DB_USER,
-        password=config.DB_PASSWORD,
-        database=config.DB_NAME
-    )
-    return db_conn
 
 
 class User:
+    
+    def connection(self):
+        db_conn = mysql.connector.connect(
+            host=config.DB_HOST,
+            user=config.DB_USER,
+            password=config.DB_PASSWORD,
+            database=config.DB_NAME
+        )
+        return db_conn
 
     def __init__(self):
         pass
 
 
     def connected(self):
-        print("Bienvenue, choisissez une option à l'aide des touches 1 et 2. 0 sert à revenir en arrière.")
+        print("Bienvenue, choisissez une option à l'aide des touches 1 et 2. q sert à revenir en arrière.")
         fav_db=input("Voulez vous 1 : Accéder à vos produits favoris ou 2 : Accéder à la base de données de tous les produits ? : ")
         if fav_db == "1":
             self.favorite()
@@ -33,7 +34,7 @@ class User:
         for id in db_list:
             print(id)
         chosed_id = input("Choisisez grace à l'id : ")
-        if chosed_id == "0":
+        if chosed_id == "q":
             return None
         for id in db_list:
             if id[0] == int(chosed_id):
@@ -43,7 +44,7 @@ class User:
 
 
     def add_fav(self, product):
-        db_conn = connection()
+        db_conn = self.connection()
         cursor = db_conn.cursor()
         fav_choice = input("Voulez vous ajoutez le produit à vos favoris ? 1: Oui 2: Non :")
         if fav_choice == "1":
@@ -57,7 +58,7 @@ class User:
             db_conn.commit()
             db_conn.close()
             self.db_category()
-        elif fav_choice == "0" or "2":
+        elif fav_choice == "q" or "2":
             db_conn.close()
             self.db_category()
         else:
@@ -67,7 +68,7 @@ class User:
 
 
     def favorite(self):
-        db_conn = connection()
+        db_conn = self.connection()
         cursor = db_conn.cursor()
         cursor.execute("SELECT * FROM favorite")
         favorites = cursor.fetchall()
@@ -83,7 +84,7 @@ class User:
 
 
     def db_category(self):
-        db_conn = connection()
+        db_conn = self.connection()
         cursor = db_conn.cursor()
         cursor.execute("SELECT * FROM category")
         result = cursor.fetchall()
@@ -98,7 +99,7 @@ class User:
 
     def db_product(self, product_lists):
 
-        db_conn = connection()
+        db_conn = self.connection()
         cursor = db_conn.cursor()
         products = []
         better_products = []

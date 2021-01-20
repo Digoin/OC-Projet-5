@@ -18,7 +18,7 @@ class Database(Category):
         return self.db_conn
 
 
-    def delete_table(self):
+    def delete_row(self):
         db_conn = self.connection()
         cursor = db_conn.cursor()
         cursor.execute("DELETE FROM category_product;")
@@ -35,7 +35,7 @@ class Database(Category):
         for characters in script:
             action += str(characters)
         cursor = self.connection().cursor()
-        cursor.execute(action, multi=True) #Switch True, False
+        cursor.execute(action, multi=True)
   
 
     def category_writer(self):
@@ -131,6 +131,11 @@ class Database(Category):
         for link in category_link:
             diff = link[0] - last_link
             if diff > 1:
+                print(countdown)
+                if countdown < 4:
+                    cursor.execute(f"DELETE FROM category_product WHERE category = {last_link}")
+                    cursor.execute(f"DELETE FROM category WHERE idcategory = {last_link}")
+                countdown = 0
                 for id in range(1, diff-1):
                     cursor.execute(f"DELETE FROM category WHERE idcategory = {last_link + id}")
             elif diff == 1:
