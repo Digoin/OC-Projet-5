@@ -3,7 +3,11 @@ import config
 
 
 class User:
+    def __init__(self):
+        pass
+
     def connection(self):
+        """Connect to the database"""
         db_conn = mysql.connector.connect(
             host=config.DB_HOST,
             user=config.DB_USER,
@@ -12,10 +16,8 @@ class User:
         )
         return db_conn
 
-    def __init__(self):
-        pass
-
     def connected(self):
+        """Let the user chose to consult the categories or his favorites products"""
         print(
             "Bienvenue, choisissez une option à l'aide des touches 1 et 2. q sert à revenir en arrière."
         )
@@ -31,6 +33,7 @@ class User:
             self.connected()
 
     def chose(self, db_list):
+        """Prompt all the choices and return the user's choice"""
         for id in db_list:
             print(id)
         chosed_id = input("Choisisez grace à l'id : ")
@@ -43,6 +46,7 @@ class User:
         self.chose(db_list)
 
     def add_fav(self, product):
+        """Ask the user if he want to add the product in his favorites"""
         db_conn = self.connection()
         cursor = db_conn.cursor()
         fav_choice = input(
@@ -70,6 +74,7 @@ class User:
             self.add_fav(product)
 
     def favorite(self):
+        """Prompt all the user's favorites products"""
         db_conn = self.connection()
         cursor = db_conn.cursor()
         cursor.execute("SELECT * FROM favorite")
@@ -85,6 +90,7 @@ class User:
         self.favorite()
 
     def db_category(self):
+        """Prompt all the database's categories"""
         db_conn = self.connection()
         cursor = db_conn.cursor()
         cursor.execute("SELECT * FROM category")
@@ -100,7 +106,7 @@ class User:
         self.db_product(result)
 
     def db_product(self, product_lists):
-
+        """Prompt all the category's products"""
         db_conn = self.connection()
         cursor = db_conn.cursor()
         products = []

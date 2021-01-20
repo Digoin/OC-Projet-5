@@ -9,6 +9,7 @@ class Database(Category):
         super().__init__(category)
 
     def connection(self):
+        """Connect to the database"""
         self.db_conn = mysql.connector.connect(
             host=config.DB_HOST,
             user=config.DB_USER,
@@ -18,6 +19,7 @@ class Database(Category):
         return self.db_conn
 
     def delete_row(self):
+        """Delete row inside all of the tables"""
         db_conn = self.connection()
         cursor = db_conn.cursor()
         cursor.execute("DELETE FROM category_product;")
@@ -28,6 +30,7 @@ class Database(Category):
         db_conn.close()
 
     def create_table(self):
+        """Use the create_table script for the database"""
         script = open("create_table.sql", "r")
         action = ""
         for characters in script:
@@ -36,6 +39,7 @@ class Database(Category):
         cursor.execute(action, multi=True)
 
     def category_writer(self):
+        """Delete already existing categories"""
         products = self.list_builder()
         category_list = set()
 
@@ -47,6 +51,7 @@ class Database(Category):
         return category_list
 
     def db_writer(self):
+        """Write all the new data in the database"""
         self.create_table()
         all_category = self.category_writer()
         db_conn = self.connection()
@@ -119,6 +124,7 @@ class Database(Category):
         db_conn.close()
 
     def delete_short_category(self):
+        """Delete too short category off the database"""
         db_conn = self.connection()
         cursor = db_conn.cursor()
         countdown = 0
