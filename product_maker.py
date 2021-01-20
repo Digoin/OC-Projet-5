@@ -1,11 +1,9 @@
 class Product:
-
     def __init__(self, json_dic, product_index):
         self.json_dic = json_dic
         self.product_index = product_index
 
-
-    def search(self, search): 
+    def search(self, search):
         return self.json_dic["products"][self.product_index][search]
 
     def name(self):
@@ -21,7 +19,10 @@ class Product:
     def categories(self):
         try:
             if self.search("categories") != "":
-                return [category.strip() for category in self.search("categories").split(",")]
+                return [
+                    category.strip()
+                    for category in self.search("categories").split(",")
+                ]
             else:
                 return None
         except KeyError:

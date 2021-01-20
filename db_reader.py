@@ -2,25 +2,26 @@ import mysql.connector
 import config
 
 
-
 class User:
-    
     def connection(self):
         db_conn = mysql.connector.connect(
             host=config.DB_HOST,
             user=config.DB_USER,
             password=config.DB_PASSWORD,
-            database=config.DB_NAME
+            database=config.DB_NAME,
         )
         return db_conn
 
     def __init__(self):
         pass
 
-
     def connected(self):
-        print("Bienvenue, choisissez une option à l'aide des touches 1 et 2. q sert à revenir en arrière.")
-        fav_db=input("Voulez vous 1 : Accéder à vos produits favoris ou 2 : Accéder à la base de données de tous les produits ? : ")
+        print(
+            "Bienvenue, choisissez une option à l'aide des touches 1 et 2. q sert à revenir en arrière."
+        )
+        fav_db = input(
+            "Voulez vous 1 : Accéder à vos produits favoris ou 2 : Accéder à la base de données de tous les produits ? : "
+        )
         if fav_db == "1":
             self.favorite()
         elif fav_db == "2":
@@ -28,7 +29,6 @@ class User:
         else:
             print("Veuillez choisir avec 1 ou 2.")
             self.connected()
-
 
     def chose(self, db_list):
         for id in db_list:
@@ -42,14 +42,17 @@ class User:
         print("L'id choisis ne correspond à rien.")
         self.chose(db_list)
 
-
     def add_fav(self, product):
         db_conn = self.connection()
         cursor = db_conn.cursor()
-        fav_choice = input("Voulez vous ajoutez le produit à vos favoris ? 1: Oui 2: Non :")
+        fav_choice = input(
+            "Voulez vous ajoutez le produit à vos favoris ? 1: Oui 2: Non :"
+        )
         if fav_choice == "1":
             try:
-                cursor.execute(f"INSERT INTO favorite (idfavorite, name) VALUES {product[0], product[1]};")
+                cursor.execute(
+                    f"INSERT INTO favorite (idfavorite, name) VALUES {product[0], product[1]};"
+                )
             except mysql.connector.Error as err:
                 if err.errno == 1062:
                     print("Le produit est déjà dans la base de donnée.")
@@ -66,7 +69,6 @@ class User:
             db_conn.close()
             self.add_fav(product)
 
-
     def favorite(self):
         db_conn = self.connection()
         cursor = db_conn.cursor()
@@ -82,7 +84,6 @@ class User:
         db_conn.close()
         self.favorite()
 
-
     def db_category(self):
         db_conn = self.connection()
         cursor = db_conn.cursor()
@@ -91,11 +92,12 @@ class User:
         choosed_category = self.chose(result)
         if choosed_category == None:
             self.connected()
-        cursor.execute(f"SELECT product FROM category_product WHERE category='{choosed_category[0]}'")
+        cursor.execute(
+            f"SELECT product FROM category_product WHERE category='{choosed_category[0]}'"
+        )
         result = cursor.fetchall()
         db_conn.close()
         self.db_product(result)
-
 
     def db_product(self, product_lists):
 
@@ -125,6 +127,6 @@ class User:
                 self.connected()
             else:
                 print("Voici une sélection de produit dont le nutriscore est a.")
-                chosed_id = self.chose(better_products) 
+                chosed_id = self.chose(better_products)
                 print(chosed_id)
                 self.add_fav(chosed_id)
