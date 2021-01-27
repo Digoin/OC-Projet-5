@@ -4,6 +4,8 @@ from product_maker import Product
 
 
 class Category(Product):
+    """This class create a list of products based on the given category"""
+
     def __init__(self, category):
         self.category = category
 
@@ -19,16 +21,16 @@ class Category(Product):
         test = 1
         for element in range(len(response_get["products"])):
             try:
-                object = Product(response_get, element)
+                product = Product(response_get, element)
                 if (
-                    object.categories_language() == "fr"
-                    and object.store() is not None
-                    and object.url() is not None
-                    and object.store() is not None
-                    and object.name() is not None
-                    and object.nutrition_grade() is not None
+                    product.categories_language() == "fr"
+                    and product.store() is not None
+                    and product.url() is not None
+                    and product.store() is not None
+                    and product.name() is not None
+                    and product.nutrition_grade() is not None
                 ):
-                    nutriments_page.append(object)
+                    nutriments_page.append(product)
                     test += 1
             except KeyError:
                 print("Une clé ne correspond pas")
@@ -37,7 +39,7 @@ class Category(Product):
     def list_builder(self):
         """Iterate lines_builder fuction"""
         products = []
-        for list in range(1, 4):
-            page = self.lines_builder(list)
+        for iteration in range(1, 4):
+            page = self.lines_builder(iteration)
             products.extend(page)
         return products

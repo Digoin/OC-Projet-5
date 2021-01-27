@@ -1,4 +1,6 @@
 class Product:
+    """This class create a product"""
+
     def __init__(self, json_dic, product_index):
         self.json_dic = json_dic
         self.product_index = product_index

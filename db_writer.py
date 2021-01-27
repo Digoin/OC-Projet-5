@@ -5,6 +5,8 @@ from api_reader import Category
 
 
 class Database(Category):
+    """This class write in the database the given list of products"""
+
     def __init__(self, category):
         super().__init__(category)
 
@@ -59,6 +61,7 @@ class Database(Category):
         new_category_id = 0
         unplaced = True
 
+        # Copying already stocked categories
         cursor.execute("SELECT idproduct FROM product ORDER BY idproduct")
         result = cursor.fetchall()
         try:
@@ -77,8 +80,7 @@ class Database(Category):
                         result.append((new_category_id, category))
                         unplaced = False
                         break
-                    else:
-                        new_category_id += 1
+                    new_category_id += 1
                 if unplaced:
                     result.append((new_category_id, category))
                 new_category_id = 0
@@ -86,6 +88,7 @@ class Database(Category):
 
         print(result)
 
+        # Writing new categories
         for category in result:
             try:
                 cursor.execute(
@@ -97,6 +100,7 @@ class Database(Category):
                 else:
                     raise
 
+        # Writing new products
         for product in self.list_builder():
             try:
                 cursor.execute(
@@ -144,9 +148,9 @@ class Database(Category):
                         f"DELETE FROM category WHERE idcategory = {last_link}"
                     )
                 countdown = 0
-                for id in range(1, diff - 1):
+                for ids in range(1, diff - 1):
                     cursor.execute(
-                        f"DELETE FROM category WHERE idcategory = {last_link + id}"
+                        f"DELETE FROM category WHERE idcategory = {last_link + ids}"
                     )
             elif diff == 1:
                 print(countdown)

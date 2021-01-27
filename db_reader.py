@@ -3,6 +3,8 @@ import config
 
 
 class User:
+    """This class interact with the user"""
+
     def __init__(self):
         pass
 
@@ -34,14 +36,14 @@ class User:
 
     def chose(self, db_list):
         """Prompt all the choices and return the user's choice"""
-        for id in db_list:
-            print(id)
+        for ids in db_list:
+            print(ids)
         chosed_id = input("Choisisez grace à l'id : ")
         if chosed_id == "q":
             return None
-        for id in db_list:
-            if id[0] == int(chosed_id):
-                return id
+        for ids in db_list:
+            if ids[0] == int(chosed_id):
+                return ids
         print("L'id choisis ne correspond à rien.")
         self.chose(db_list)
 
@@ -79,10 +81,10 @@ class User:
         cursor = db_conn.cursor()
         cursor.execute("SELECT * FROM favorite")
         favorites = cursor.fetchall()
-        id = self.chose(favorites)
-        if id == None:
+        ids = self.chose(favorites)
+        if ids is None:
             self.connected()
-        cursor.execute(f"SELECT * FROM product WHERE idproduct = '{id[0]}'")
+        cursor.execute(f"SELECT * FROM product WHERE idproduct = '{ids[0]}'")
         chosed_product = cursor.fetchall()
         print("Voici le détail du produit choisis.")
         print(chosed_product)
@@ -96,7 +98,7 @@ class User:
         cursor.execute("SELECT * FROM category")
         result = cursor.fetchall()
         choosed_category = self.chose(result)
-        if choosed_category == None:
+        if choosed_category is None:
             self.connected()
         cursor.execute(
             f"SELECT product FROM category_product WHERE category='{choosed_category[0]}'"
@@ -119,7 +121,7 @@ class User:
         db_conn.close()
 
         chosed_product = self.chose(products)
-        if chosed_product == None:
+        if chosed_product is None:
             self.db_category()
         print(f"Le nutriscore du produit choisis est {chosed_product[3]}.")
         if chosed_product[3] == "a":
