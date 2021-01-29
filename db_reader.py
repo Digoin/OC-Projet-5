@@ -38,13 +38,13 @@ class User:
         """Prompt all the choices and return the user's choice"""
         for ids in db_list:
             print(ids)
-        chosed_id = input("Choisisez grace à l'id : ")
+        chosed_id = input("Choisissez grâce à l'id : ")
         if chosed_id == "q":
             return None
         for ids in db_list:
             if ids[0] == int(chosed_id):
                 return ids
-        print("L'id choisis ne correspond à rien.")
+        print("L'id choisi ne correspond à rien.")
         self.chose(db_list)
 
     def add_fav(self, product):
@@ -61,7 +61,7 @@ class User:
                 )
             except mysql.connector.Error as err:
                 if err.errno == 1062:
-                    print("Le produit est déjà dans la base de donnée.")
+                    print("Le produit est déjà dans la base de données.")
                 else:
                     raise
             db_conn.commit()
@@ -86,7 +86,7 @@ class User:
             self.connected()
         cursor.execute(f"SELECT * FROM product WHERE idproduct = '{ids[0]}'")
         chosed_product = cursor.fetchall()
-        print("Voici le détail du produit choisis.")
+        print("Voici le détail du produit choisi.")
         print(chosed_product)
         db_conn.close()
         self.favorite()
@@ -123,7 +123,7 @@ class User:
         chosed_product = self.chose(products)
         if chosed_product is None:
             self.db_category()
-        print(f"Le nutriscore du produit choisis est {chosed_product[3]}.")
+        print(f"Le nutriscore du produit choisi est {chosed_product[3]}.")
         if chosed_product[3] == "a":
             self.add_fav(chosed_product)
         else:
