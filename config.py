@@ -1,4 +1,4 @@
-#Database
+# Database
 
 DB_HOST = "localhost"
 
@@ -9,6 +9,8 @@ DB_PASSWORD = ""
 DB_NAME = ""
 
 
-#Search
+# Search
 
-CATEGORY_SEARCH = [] #Example : CATEGORY_SEARCH = ["cakes", "pizzas", "bread", "fruits", "yogurts"]
+CATEGORY_SEARCH = (
+    []
+)  # Example : CATEGORY_SEARCH = ["cakes", "pizzas", "bread", "fruits", "yogurts"]
