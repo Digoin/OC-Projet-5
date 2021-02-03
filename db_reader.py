@@ -57,7 +57,7 @@ class User:
         if fav_choice == "1":
             try:
                 cursor.execute(
-                    f"INSERT INTO favorite (idfavorite, name) VALUES {product[0], product[1]};"
+                    f"INSERT INTO favorite (idfavorite) VALUES {product[0]};"
                 )
             except mysql.connector.Error as err:
                 if err.errno == 1062:
@@ -77,19 +77,17 @@ class User:
 
     def favorite(self):
         """Prompt all the user's favorites products"""
+        products = []
         db_conn = self.connection()
         cursor = db_conn.cursor()
         cursor.execute("SELECT * FROM favorite")
         favorites = cursor.fetchall()
-        ids = self.chose(favorites)
-        if ids is None:
-            self.connected()
-        cursor.execute(f"SELECT * FROM product WHERE idproduct = '{ids[0]}'")
-        chosed_product = cursor.fetchall()
-        print("Voici le détail du produit choisi.")
-        print(chosed_product)
+        for ids in favorites:
+            cursor.execute(f"SELECT * FROM product WHERE idproduct = '{ids[0]}'")
+            chosed_product = cursor.fetchall()
+            products.append(chosed_product)
+        print(products)
         db_conn.close()
-        self.favorite()
 
     def db_category(self):
         """Prompt all the database's categories"""
